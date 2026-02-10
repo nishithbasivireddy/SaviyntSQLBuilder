@@ -1,0 +1,81 @@
+# Saviynt Actionable Analytics - AI Agent Knowledge Base
+
+## 1. Module Overview
+**Actionable Analytics** in Saviynt Identity Cloud allows administrators to define, schedule, and manage detective controls. These controls run queries (SQL or Elasticsearch) against the Identity Repository to identify risks, data violations, or operational anomalies (e.g., "Users with no Manager" or "Accounts inactive for 90 days").
+
+### Key Capabilities
+* **Detection:** Runs scheduled scans to find violations.
+* **Risk Scoring:** Assigns risk levels (Low, Medium, High, Critical) to findings.
+* **Remediation:** Triggers workflows or email alerts to owners for resolution.
+* **History Tracking:** Maintains a simplified audit trail of scan results and actions taken.
+
+---
+
+## 2. Core Data Schema for Analytics
+*Use this schema to generate SQL queries or interpret analytics results.*
+
+### Table: `analytics_controls`
+*Defines the rule/control itself.*
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `id` | BigInt | Unique Primary Key. |
+| `analyticsname` | String | The display name of the control (e.g., "Dormant Accounts"). |
+| `description` | Text | Detailed explanation of what the control detects. |
+| `query` | Text | **Crucial:** The SQL or JSON query executed to find violations. |
+| `risk` | Int | Risk Level: `1`=Low, `2`=Medium, `3`=High, `4`=Critical. |
+| `status` | Int | `1` = Active (runs on schedule), `0` = Inactive. |
+| `connectionid` | BigInt | ID of the database connection (usually the internal Saviynt DB). |
+| `remediation_workflow` | String | Name of the workflow triggered when a violation is found. |
+| `recommendation` | Text | Suggested steps to fix the violation (displayed to remediation owners). |
+
+### Table: `analytics_history`
+*Stores the summary of every scan execution.*
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `id` | BigInt | Primary Key. |
+| `analyticscontrolid` | BigInt | Foreign Key linking to the specific control. |
+| `scandate` | DateTime | When the scan ran. |
+| `recordcount` | Int | Number of violations found in this specific scan. |
+| `status` | Int | Execution status (`1`=Success, `0`=Failure). |
+
+### Table: `analytics_owners`
+*Defines who is responsible for fixing the violations.*
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `analyticscontrolid` | BigInt | Foreign Key to the control. |
+| `ownerid` | BigInt | ID of the User or UserGroup responsible. |
+| `ownertype` | Int | `1` = User, `2` = UserGroup. |
+
+---
+
+## 3. Operational Logic & Rules
+
+### Creating a Control (AI Instructions)
+To generate a new analytics control, the AI must define:
+1.  **Name:** Descriptive title.
+2.  **Risk:** Severity of the finding.
+3.  **Query:** A valid SQL SELECT statement returning the violating records.
+    * *Constraint:* The query usually selects from `users`, `accounts`, or `entitlements`.
+4.  **Owner:** Who receives the alert.
+
+### Interpreting Scan Results
+* **Violation Count:** Check `analytics_history.recordcount`. If `> 0`, risk exists.
+* **Trend Analysis:** Compare `recordcount` over multiple `scandate` entries for the same `analyticscontrolid` to see if risk is increasing or decreasing.
+
+### Remediation Actions
+When a violation is found, the system can:
+1.  **Notify:** Send email to `analytics_owners`.
+2.  **Workflow:** Trigger the process defined in `remediation_workflow`.
+3.  **Action History:** Logs whether the owner clicked "Ignore" or "Remediate".
+
+---
+
+## 4. Sample Queries for AI Generation
+*Use these patterns to generate valid analytics queries.*
+
+**Scenario 1: Find Active Users with No Email**
+```sql
+SELECT u.username, u.displayname 
+FROM users u 
+WHERE u.statuskey = 1 
+AND (u.email IS NULL OR u.email = '');

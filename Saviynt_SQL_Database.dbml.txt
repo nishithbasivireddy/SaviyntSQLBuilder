@@ -1,0 +1,944 @@
+Project Saviynt_Identity_Cloud {
+  database_type: "MySQL"
+  Note: "Complete Saviynt Identity Cloud Database Schema (2025)"
+}
+
+// ========================================================
+// 1. CORE IDENTITY REPOSITORY (Users, Orgs, Settings)
+// ========================================================
+
+Table users {
+  USERKEY bigint [pk, increment, note: "Primary Key"]
+  USERNAME varchar(255) [not null]
+  PASSWORD varchar(255)
+  ACCOUNTEXPIRED bit(1)
+  ACCOUNTLOCKED bit(1)
+  CITY varchar(255)
+  COMMENTS varchar(255)
+  COMPANYNAME varchar(255)
+  STATUSKEY bigint [note: "0=Inactive, 1=Active"]
+  COSTCENTER varchar(255)
+  COUNTRY varchar(255)
+  CREATEDBY varchar(255)
+  CREATEDATE datetime
+  CUSTOMPROPERTY1_50 varchar(255)
+  DEPARTMENTNUMBER varchar(255)
+  DEPARTMENTNAME varchar(255)
+  DISPLAYNAME varchar(255)
+  DONOTDISTURBDELEGATE varchar(255)
+  ECP longtext [note: "Encrypted Custom Property"]
+  EMAIL varchar(255)
+  EMPLOYEETYPE varchar(255)
+  EMPLOYEECLASS varchar(255)
+  EMPLOYEEID varchar(255)
+  ENDDATE datetime
+  ENTITY varchar(255)
+  FIRSTNAME varchar(255)
+  HCP tinytext [note: "Hashed Custom Property"]
+  JOBCODE varchar(255)
+  JOBDESCRIPTION varchar(255)
+  JOB_ID bigint
+  JOB_FUNCTION varchar(255)
+  JOBCODEDESC varchar(255)
+  LASTNAME varchar(255)
+  LASTSYNCDATE datetime
+  LEAVESTATUS varchar(255)
+  LOCATION varchar(255)
+  LOCATIONDESC varchar(255)
+  LOCATIONNUMBER varchar(255)
+  MANAGER bigint
+  MIDDLENAME varchar(255)
+  ORGUNITID varchar(255)
+  OWNER varchar(255)
+  PASSWORDEXPIRED bit(1)
+  PHONENUMBER varchar(255)
+  PREFEREDFIRSTNAME varchar(255)
+  REGION varchar(255)
+  REGIONCODE varchar(255)
+  SAVUPDATEDATE datetime
+  SECONDARYMANAGER bigint
+  SECONDARYPHONE varchar(255)
+  SECONDARYEMAIL varchar(255)
+  SECURITYANSWERS varchar(255)
+  SITEID varchar(255)
+  STARTDATE datetime
+  STATE varchar(255)
+  STREET varchar(255)
+  TERMDATE datetime
+  TITLE varchar(255)
+  UPDATEDATE datetime
+  USERSOURCE varchar(255)
+  FAILEDTRIES bigint
+  HANARULEKEY longtext
+  OWNERONTERMINATE bigint
+  RULEACTION varchar(255)
+  USERSOURCEKEY bigint
+  ENABLED bit(1)
+  CUSTOMER bigint
+  SYSTEMUSERNAME varchar(255)
+  TASKCREATEDFORTERMINATE bigint
+  UPDATEUSER bigint
+  VENDORMANAGER bigint
+  RISKSCORE bigint
+  LASTPASSWORDUPDATEDATE datetime
+  LOCALAUTHENABLED bit(1)
+  PIIERASURESTATUS bigint
+}
+
+Table customer {
+  CUSTOMERKEY bigint [pk]
+  COMMENTS varchar(255)
+  CREATEDATE datetime
+  CREATEUSER bigint
+  CUSTOMERNAME varchar(255)
+  CUSTOMERTYPE bigint
+  CUSTOMPROPERTY1_20 varchar(255)
+  DESCRIPTION varchar(255)
+  LOCATION varchar(255)
+  LOGO mediumblob
+  LOGONAME varchar(255)
+  PARENTCUSTOMER bigint
+  PHONENUMBER varchar(255)
+  PRIMARYVENDORCONTACT bigint
+  RISK bigint
+  SCORE bigint
+  STATUS bigint
+  UPDATEDATE datetime
+  UPDATEUSER bigint
+  VENDORMANAGER bigint
+}
+
+Table customer_entitlementvalues {
+  CUSTOMERKEY bigint [pk]
+  ENTITLEMENT_VALUES bigint [pk]
+  UPDATEDATE datetime
+  UPDATEUSER bigint
+}
+
+Table organization_owners {
+  USERKEY bigint [pk]
+  CUSTOMERKEY bigint [pk]
+  RANK int [pk]
+  UPDATEDATE datetime
+  UPDATEUSER varchar(255)
+}
+
+// ========================================================
+// 2. ACCOUNTS & ENTITLEMENTS
+// ========================================================
+
+Table accounts {
+  ACCOUNTKEY bigint [pk]
+  ACCOUNTID varchar(255)
+  ACCOUNTCLASS varchar(255)
+  ACCOUNTTYPE varchar(255)
+  APPLICENSETYPE bigint
+  ARSTASKKEY bigint
+  COMMENTS varchar(255)
+  CREATED_ON datetime
+  CREATOR varchar(255)
+  CUSTOMPROPERTY1_10 varchar(255)
+  CUSTOMPROPERTY11_56 varchar(255)
+  CUSTOMPROPERTY57_60 mediumtext
+  DESCRIPTION longtext
+  DISPLAYNAME varchar(255)
+  ENDPOINTKEY bigint
+  INCORRECTLOGONS bigint
+  JOBID bigint
+  LASTLOGONDATE datetime
+  LASTPASSWORDCHANGE datetime
+  NAME varchar(255)
+  ORPHAN bit(1)
+  PASSWORDCHANGESTATUS varchar(255)
+  PASSWORDLOCKDATE datetime
+  PRIVILEGED varchar(255)
+  REFERENCED_ACCOUNTNAME varchar(255)
+  SAVLICENSETYPE bigint
+  STATUS varchar(255)
+  SYSTEMID bigint
+  TOTALUSAGE varchar(255)
+  UPDATEUSER varchar(255)
+  UPDATEDATE datetime
+  USERGROUP varchar(255)
+  USERLOCK bigint
+  VALIDFROM datetime
+  VALIDTHROUGH datetime
+  SAVIYNT_CONNECT_JOBID bigint
+  SAVIYNT_CONNECT_UPDATEDATE datetime
+  REFERENCED_ACCOUNTKEY bigint
+  ACCOUNTCONFIG longtext
+}
+
+Table user_accounts {
+  USERKEY bigint [pk]
+  ACCOUNTKEY bigint [pk]
+  UPDATEDATE datetime
+  UPDATEUSER varchar(255)
+  LASTCERTIFIEDCAMPAIGNDATE datetime
+  LASTCERTIFIEDCAMPAIGNNAME varchar(255)
+  LASTCERTIFIEDUSER bigint
+}
+
+Table account_entitlements1 {
+  ACCENTKEY bigint [pk]
+  SAVACCESS varchar(255)
+  ACCOUNTKEY bigint
+  ARSTASKKEY bigint
+  ASSIGNEDFROMCOMPROLE bit(1)
+  ASSIGNEDFROMROLE bigint
+  ASSIGNEDFROMRULE varchar(255)
+  ASSIGNEDFROMCHILD bit(1)
+  ENDDATE datetime
+  ENTITLEMENT_VALUEKEY bigint
+  JOB_ID bigint
+  JRMRULES varchar(255)
+  LASTUSEDENDDATE datetime
+  STARTDATE datetime
+  UPDATEDATE datetime
+  UPDATEUSER bigint
+  LASTCERTIFIEDCAMPAIGNNAME varchar(255)
+  SAVIYNT_CONNECT_JOBID bigint
+  SAVIYNT_CONNECT_UPDATE_DATE datetime
+  ASSIGNEDFROMROLES varchar(3000)
+  LASTCERTIFIEDCAMPAIGNDATE datetime
+  LASTCERTIFIEDUSER bigint
+  UUID varchar(255)
+}
+
+Table entitlement_values {
+  ENTITLEMENT_VALUEKEY bigint [pk]
+  SAVACCESS varchar(255)
+  CONFIDENTIALITY bigint
+  CUSTOMPROPERTY1_5 longtext
+  CUSTOMPROPERTY6_40 varchar(255)
+  DESCRIPTION longtext
+  DISPLAYNAME varchar(1024)
+  ENT_OBJHASH bigint
+  ENTCLASS varchar(255)
+  ENTITLEMENTID varchar(255)
+  ENTITLEMENTID_LONG longtext
+  ENTITLEMENT_GLOSSARY longtext
+  ENTITLEMENT_VALUE varchar(255)
+  ENTITLEMENTTYPEKEY bigint
+  JOB_ID bigint
+  LASTSCANDATE datetime
+  SAVLEVEL bigint
+  MODULE varchar(255)
+  ORPHAN bit(1)
+  PRIVILEGED bigint
+  PROGRAM varchar(255)
+  RISK bigint
+  ROLETYPE bigint
+  SCHEMANAME varchar(255)
+  SODDETAILDATA longblob
+  SOD bit(1)
+  SOX_CRITICAL bigint
+  STATUS bigint
+  SYS_CRITICAL bigint
+  UPDATEDATE datetime
+  UPDATEUSER bigint
+  SAVIYNT_CONNECT_JOBID bigint
+  SAVIYNT_CONNECT_UPDATE_DATE datetime
+  ACCTENTMAPPINGINFOCOLUMNFROMENT longtext
+  ENTITLEMENTMAPPINGJSON longtext
+  REFERENCED_ENTITLEMENT bigint
+  PRIORITY bigint
+}
+
+Table entitlement_types {
+  ENTITLEMENTTYPEKEY bigint [pk]
+  ARS_REQ_ENT_SQLQUEREY varchar(255)
+  ARS_SELECT_ENT_SQLQUEREY varchar(255)
+  CERTIFIABLE bit(1)
+  CREATETASKACTION longtext
+  CUSTOMPROPERTY1_40 varchar(255)
+  ENDPOINTKEY bigint
+  ENTITLEMENTDESCRIPTION varchar(255)
+  ENTITLEMENTNAME varchar(255)
+  HIEARCHYREQUIRED int
+  MODULE varchar(255)
+  RECON bit(1)
+  REQUESTFORM int
+  REQUIREDINREQUEST bit(1)
+  SHOWONCHILD bit(1)
+  SYSTEMKEY bigint
+  AVAILABLEQUERYSERVICEACCOUNT varchar(255)
+  DISPLAYNAME varchar(255)
+  ENABLEPROVISIONINGPRIORITY bit(1)
+  ORDERINDEX bigint
+  SELECTQUERYSERVICEACCOUNT varchar(255)
+  WORKFLOW varchar(255)
+  UPDATEDATE datetime
+}
+
+Table entitlementmap {
+  ENTITLEMENT_VALUE1KEY bigint
+  ENTITLEMENT_VALUE2KEY bigint
+  ADDDEPENDENTTASK bit(1)
+  EXCLUDEENTITLEMENT bit(1)
+  JOB_ID varchar(255)
+  REMOVEDEPENDENTENTTASK bit(1)
+}
+
+// ========================================================
+// 3. INFRASTRUCTURE (Endpoints, Systems)
+// ========================================================
+
+Table endpoints {
+  ENDPOINTKEY bigint [pk]
+  ACCESSQUERY varchar(255)
+  DISABLEACCOUNTREQUEST varchar(255)
+  ACCOUNTNAME bit(1)
+  ACCOUNTTYPEFORSERVICEACCOUNT varchar(255)
+  ACCOUNTTYPENODEPROVISION varchar(255)
+  ACCOUNTTYPENOPASSWORDCHANGE varchar(255)
+  CREATEENTTASKFORREMOVEACC bit(1)
+  DEFAULTLICENSE bigint
+  DESCRIPTION varchar(255)
+  DISPLAYNAME varchar(255)
+  ENDPOINTNAME bigint
+  ENTSWITHNEWACCOUNT longtext
+  SECURITYSYSTEMKEY bigint
+  PARENTENDPOINTKEY bigint
+  ACCOUNTNAMERULE longtext
+  CONNECTIONCONFIG longtext
+  OWNERKEY bigint
+  OWNERTYPE bigint
+  PARENTACCOUNTPATTERN varchar(255)
+  REQUESTOWNER bigint
+  REQUESTOWNERTYPE bigint
+  STATUS bigint
+  USERACCOUNTCORRELATIONRULE longtext
+  CUSTOMPROPERTY1_30 varchar(255)
+  CUSTOMPROPERTY31_45 tinytext
+  CUSTOMPROPERTY1_30LABEL varchar(255)
+  CUSTOMPROPERTY31_56LABEL tinytext
+  ACCOUNTNAMEVALIDATORREGEX longtext
+  APPLICATIONLOGO varchar(255)
+  APPLICATIONURL varchar(255)
+  CREATEDATE datetime
+  CREATEDBY bigint
+  CREATEDFROM varchar(255)
+  DISABLEACCOUNTREQUESTSERVICEACCOUNT varchar(255)
+  ENABLECOPYACCESS bit(1)
+  ENDPOINTCONFIG longtext
+  JRMDATAPOPULATED bit(1)
+  LASTIMPORT longtext
+  PRIMARYACCOUNTTYPE varchar(255)
+  ROLETYPEASJSON longtext
+  SERVICEACCOUNTACCESSQUERY varchar(255)
+  SERVICEACCOUNTNAMERULE longtext
+  UPDATEDATE datetime
+  UPDATEDBY bigint
+}
+
+Table securitysystems {
+  SYSTEMKEY bigint [pk]
+  ACCESSADDWORKFLOW varchar(255)
+  ACCESSREMOVEWORKFLOW varchar(255)
+  DASHBOARDIMPORTCONFIG longtext
+  DISPLAYNAME varchar(255)
+  HOSTNAME varchar(255)
+  INSTANTPROVISION bit(1)
+  LOGTABLE varchar(255)
+  MANAGEENTITY bit(1)
+  ONECLICKIMPORTCONFIG longtext
+  OWNER bigint
+  PERSISTENTDATA bit(1)
+  EXTERNALCONNECTION bigint
+  POLICYRULE bigint
+  PORT varchar(255)
+  PROPOSEDACCOUNTOWNERSWORKFLOW varchar(255)
+  PROVISIONINGCONNECTION bigint
+  SERVICEDESKCONNECTION bigint
+  STATUS bigint
+  SYSTEMNAME varchar(255)
+  AUTOMATEDPROVISIONING bit(1)
+  CONNECTIONPARAMETERS longtext
+  DEFAULTSYSTEM bit(1)
+  RECONAPPLICATION bit(1)
+  USEOPENCONNECTOR bit(1)
+  ADDSERVICEACCOUNTWORKFLOW varchar(255)
+  CREATEDATE datetime
+  CREATEDBY bigint
+  CREATEDFROM varchar(255)
+  FFIDREQUESTACCESSWORKFLOW varchar(255)
+  FIREFIGHTERIDWORKFLOW varchar(255)
+  PROVISIONINGCOMMENTS varchar(255)
+  PROVISIONINGTRIES bigint
+  PROVLIMITJSON longtext
+  REMOVESERVICEACCOUNTWORKFLOW varchar(255)
+  UPDATEDATE datetime
+  UPDATEDBY bigint
+}
+
+Table externalconnattvalue {
+  EXTERNALCONNECTIONKEY bigint [pk]
+  CONNECTIONDESCRIPTION varchar(255)
+  CONNECTIONNAME varchar(255)
+  CREATEDBY varchar(255)
+  CREATEDON datetime
+  EMAILTEMPLATE varchar(255)
+  EXTERNALCONNECTIONTYPE bigint
+  NODE_MAC_ID bigint
+  STATUS bigint
+  STATUSFORENABLEDISABLE bigint
+  UPDATEDBY varchar(255)
+  UPDATEDON datetime
+  TEMPLATENAME varchar(255)
+  TEMPLATE_MANDATORYDATA longtext
+}
+
+// ========================================================
+// 4. ROLES
+// ========================================================
+
+Table roles {
+  ROLEKEY bigint [pk]
+  CONFIDENTIALITY bigint
+  CUSTOMPROPERTY1_5 longtext
+  CUSTOMPROPERTY6_60 varchar(255)
+  DEFAULTTIMEFRAMEHRS bigint
+  DESCRIPTION varchar(255)
+  DISPLAYNAME varchar(255)
+  ENDPOINTKEY bigint
+  FLAGEXPORTEDTOOIA bit(1)
+  GLOSSARY varchar(255)
+  SAVLEVEL bigint
+  MAXTIMEFRAMEHRS bigint
+  MININGINSTANCE varchar(255)
+  PARENTROLES bigint
+  PRIVILEGED bigint
+  REQUESTABLE bit(1)
+  RISK bigint
+  ROLE_NAME varchar(255)
+  ROLETYPE bigint
+  SHOWDYNAMICATTRS bit(1)
+  SOD bit(1)
+  SOX_CRITICAL bigint
+  STATUS bigint
+  SYS_CRITICAL bigint
+  SYSTEMID bigint
+  UPDATEDATE datetime
+  UPDATEUSER bigint
+}
+
+Table role_user_account {
+  Id bigint [pk]
+  ACCOUNTKEY bigint
+  COMMENTS varchar(255)
+  ENDDATE datetime
+  LASTCERTIFIEDCAMPAIGNDATE datetime
+  LASTCERTIFIEDCAMPAIGNNAME varchar(255)
+  LASTCERTIFIEDUSER bigint
+  ROLEKEY bigint
+  SOURCE varchar(255)
+  STARTDATE datetime
+  UPDATEDATE datetime
+  UPDATEUSER varchar(255)
+  USERKEY bigint
+}
+
+Table role_entitlements {
+  ROLEKEY bigint [pk]
+  ENTITLEMENT_VALUEKEY bigint [pk]
+  UPDATEDATE datetime
+  UPDATEUSER varchar(255)
+}
+
+Table savroles {
+  ROLEKEY bigint [pk]
+  CUSTOMPROPERTY1_20 longtext
+  HOMEPAGE bigint
+  READONLY bit(1)
+  ROLEDESCRIPTION varchar(255)
+  ROLENAME varchar(255)
+  STATUSKEY bigint
+  UPDATEDATE datetime
+  UPDATEUSER bigint
+}
+
+Table savrole_permission {
+  SAVROLEKEY bigint
+  ACCESSKEY bigint
+  ACCESSTYPE varchar(255)
+  UPDATEDATE datetime
+  UPDATEUSER bigint
+}
+
+Table user_savroles {
+  USERKEY bigint [pk]
+  ROLEKEY bigint [pk]
+  UPDATEDATE datetime
+  UPDATEUSER varchar(255)
+}
+
+// ========================================================
+// 5. USER GROUPS
+// ========================================================
+
+Table user_groups {
+  USERGROUPKEY bigint [pk]
+  GROUPID bigint
+  UPDATEDATE datetime
+  UPDATEUSER bigint
+  USER_GROUPDESCRIPTION varchar(255)
+  USER_GROUPNAME varchar(255)
+}
+
+Table usergroup_users {
+  USERKEY bigint [pk]
+  USER_GROUPKEY bigint [pk]
+  UPDATEDATE datetime
+  UPDATEUSER varchar(255)
+}
+
+Table usergroup_entitlements {
+  ENTITLEMENT_VALUEKEY bigint [pk]
+  USER_GROUPKEY bigint [pk]
+  UPDATEDATE datetime
+  UPDATEUSER bigint
+}
+
+Table usergroup_owners {
+  USERKEY bigint [pk]
+  USERGROUPKEY bigint [pk]
+  RANK int [pk]
+  UPDATEDATE datetime
+  UPDATEUSER varchar(255)
+}
+
+// ========================================================
+// 6. REQUESTS & WORKFLOWS (ARS)
+// ========================================================
+
+Table ars_requests {
+  REQUESTKEY bigint [pk]
+  COMMENTS longtext
+  COMPLETEDATE datetime
+  DUEDATE datetime
+  ENDPOINTASCSV varchar(2000)
+  JBPMPROCESSINSTANCEID varchar(255)
+  REQUESTORIGIN varchar(255)
+  REQUESTDATE datetime
+  REQUESTOR bigint
+  REQUESTTYPE bigint
+  STATUS bigint
+  UUIDKEY varchar(255)
+  WORKFLOWNAME varchar(255)
+  SODEVALUATED bigint
+}
+
+Table request_access {
+  REQUEST_ACCESSKEY bigint [pk]
+  ACCESSKEY bigint
+  ACCESSTYPE bigint
+  COMMENTS longtext
+  ENDDATE datetime
+  PARENTREQUEST bigint
+  RANK bigint
+  REQUESTKEY bigint
+  REQUESTTYPE bigint
+  STARTDATE datetime
+  STATUS bigint
+  USERKEY bigint
+}
+
+Table access_approvers {
+  ACCESS_APPROVERSKEY bigint [pk]
+  APPROVEBY bigint
+  APPROVEDATE datetime
+  APPROVERKEY bigint
+  APPROVERTYPE bigint
+  COMMENTS longtext
+  DUEDATE datetime
+  JBPM_ACTIVITY_NAME varchar(255)
+  JBPMEXECUTIONID varchar(255)
+  REQUEST_ACCESS_KEY bigint
+  REQUESTEXCEPTIONKEYS varchar(1024)
+  STATUS bigint
+  SUBMITDATE datetime
+  UNIQUID varchar(255)
+  ISFROMINVITE bit(1)
+}
+
+Table arstasks {
+  TASKKEY bigint [pk]
+  ACCOUNTKEY bigint
+  ACCOUNTNAME varchar(255)
+  ASSIGNEDFROMROLE bigint
+  ASSIGNEDFROMROLES varchar(3000)
+  ASSIGNEDFROMRULE varchar(255)
+  COMMENTS longtext
+  PASSWORD varchar(255)
+  ENDPOINT bigint
+  ENTITLEMENT_VALUEKEY bigint
+  EXTERNALCONNECTION bigint
+  OWNERTYPE bigint
+  OWNERKEY bigint
+  PARENTTASK bigint
+  PROVISIONINGCOMMENTS longtext
+  PROVISIONINGMETADATA longtext
+  PROVISIONINGTRIES bigint
+  REQUESTACCESSKEY bigint
+  REQUESTKEY bigint
+  REQUESTRULETASKCREATED bit(1)
+  REQUESTEDBY bigint
+  SECURITYSYSTEM bigint
+  SOURCE varchar(255)
+  STARTDATE datetime
+  STATUS bigint
+  TASKDATE datetime
+  TASKTYPE bigint
+  UPADTEUSER bigint
+  UPDATEACCOUNTTASKCREATED bit(1)
+  UPDATEDATE datetime
+  USERKEY bigint
+}
+
+// ========================================================
+// 7. SEPARATION OF DUTIES (SOD)
+// ========================================================
+
+Table sodrisks {
+  SODKEY bigint [pk]
+  ACCOUNTKEY bigint
+  ACTUALRISK varchar(255)
+  COMMENTS longtext
+  FIRSTIMPORTDATE datetime
+  JOBID bigint
+  LASTIMPORTDATE datetime
+  MC_RISK_ACCOUNTKEY bigint
+  RENDDATE datetime
+  RISKCODE varchar(255)
+  RISKKEY bigint
+  RISKOWNER bigint
+  RSTARTDATE datetime
+  STATUS bigint
+  UPDATEDATE bigint
+  UPDATEUSER bigint
+  USERKEY bigint
+}
+
+Table sodrisk_entitlement {
+  SODRISKENTITLEMENTKEY bigint [pk]
+  ACCOUNTKEY bigint
+  ASSOCIATEDSAPROLEKEY bigint
+  FUNCTIONKEY bigint
+  PARENTROLEASCSV longtext
+  PARENTROLEKEYASCSV longtext
+  SODKEY bigint
+  SODTYPE bigint
+  TCODEKEY bigint
+}
+
+// ========================================================
+// 8. TRUST & ANALYTICS
+// ========================================================
+
+Table identitymatchandmergedetails {
+  MATCHKEY bigint [pk]
+  ATTRIBUTESMATCHED text
+  COMMENTS text
+  CREATEDON datetime
+  PRIMARYUSERKEY bigint
+  DUPLICATEUSERKEY bigint
+  JOBID bigint
+  LASTMODIFIEDON datetime
+  MATCHDETAILS text
+  MATCHPERCENT bigint
+  MERGEDBY bigint
+  MERGEDON datetime
+  SOURCE varchar(255)
+  STATUS bigint
+  merged_attribute_details longtext
+}
+
+Table RoleAccessMismatches {
+  RAMKEY bigint [pk]
+  MISMATCH_TYPE varchar(255)
+  MISMATCH_SOURCEKEY bigint
+  REASON varchar(255)
+  ROLEKEY bigint
+  USERKEY bigint
+  ACCOUNTKEY bigint
+  ENTITLEMENT_VALUEKEY bigint
+  JOBID bigint
+  RUA_ENDDATE datetime
+  AE_ENDDATE datetime
+  ACCOUNTSTATUS varchar(255)
+  REQUESTFORM int
+  USERSTATUS bigint
+  CHILDROLEKEY bigint
+}
+
+Table aetrustconsolidated {
+  OBJECTKEY bigint
+  TRUSTSCORE int
+  TRUSTJUSTIFICATION varchar(2000)
+  JOBID bigint
+  DATE datetime
+}
+
+Table cac_access {
+  ID bigint
+  JRMRULES varchar(255)
+  JOBID bigint
+}
+
+Table cac_role {
+  ID bigint
+  JRMRULES varchar(255)
+  JOBID bigint
+}
+
+Table ruatrustconsolidated {
+  OBJECTKEY bigint
+  TRUSTSCORE int
+  TRUSTJUSTIFICATION varchar(2000)
+  JOBID bigint
+  DATE datetime
+}
+
+Table Paa_uk_evk {
+  AEOUTLIERKEY bigint [pk]
+  USERKEY bigint
+  ENTITLEMENT_VALUEKEY bigint
+  ENTITLEMENTTYPEKEY bigint
+  ACCENTKEY bigint
+  LIKELY_APPROVAL bigint
+  SCORE float
+  JUSTIFICATION mediumtext
+}
+
+Table Paa_uk_rk {
+  RUAOUTLIERKEY bigint [pk]
+  USERKEY bigint
+  ROLEKEY bigint
+  ROLETYPEY bigint
+  RUAKEY bigint
+  SCORE float
+  JUSTIFICATION mediumtext
+}
+
+// ========================================================
+// 9. JOBS & LOGS
+// ========================================================
+
+Table ecmimportjob {
+  JOBID bigint [pk]
+  COMMENTS longtext
+  EXTERNALCONNECTION varchar(255)
+  IPADDRESS varchar(255)
+  JOBENDDATE datetime
+  JOBSTARTDATE datetime
+  JOBNAME varchar(255)
+  SAVRESPONSE longtext
+  SYSTEMNAME varchar(255)
+  UPDATEUSER varchar(255)
+  JOBGROUP varchar(255)
+  TRIGGERNAME varchar(255)
+  TRIGGERTYPE varchar(255)
+}
+
+Table importlog {
+  IMPORTLOGID bigint
+  FILENAME varchar(255)
+  JOBID bigint
+  LOGDATAASXML longtext
+  PARENTJOBID bigint
+}
+
+Table qrtz_triggers {
+  TRIGGER_GROUP varchar(80)
+  JOB_NAME varchar(80)
+  JOB_GROUP varchar(80)
+  IS_VOLATILE varchar(1)
+  DESCRIPTION varchar(120)
+  NEXT_FIRE_TIME bigint
+  PREV_FIRE_TIME bigint
+  PRIORITY int
+  TRIGGER_STATE varchar(16)
+  TRIGGER_TYPE varchar(8)
+  START_TIME bigint
+  END_TIME bigint
+  CALENDAR_NAME varchar(80)
+  MISFIRE_INSTR smallint
+  JOB_DATA blob
+}
+
+Table qrtz_job_details {
+  JOB_NAME varchar(80)
+  JOB_GROUP varchar(80)
+  DESCRIPTION varchar(120)
+  JOB_CLASS_NAME varchar(128)
+  IS_DURABLE varchar(1)
+  IS_VOLATILE varchar(1)
+  IS_STATEFUL varchar(1)
+  REQUESTS_RECOVERY varchar(1)
+  JOB_DATA blob
+}
+
+Table qrtz_fired_triggers {
+  ENTRY_ID varchar(95)
+  TRIGGER_NAME varchar(80)
+  TRIGGER_GROUP varchar(80)
+  IS_VOLATILE varchar(1)
+  INSTANCE_NAME varchar(80)
+  FIRED_TIME bigint
+  PRIORITY int
+  STATE varchar(16)
+  JOB_NAME varchar(80)
+  JOB_GROUP varchar(80)
+  IS_STATEFUL varchar(1)
+  REQUESTS_RECOVERY varchar(1)
+}
+
+// ========================================================
+// 10. CAMPAIGN & CERTIFICATION (Derived from Description)
+// ========================================================
+
+Table Campaign {
+  Campaign_ID bigint [pk]
+  CampaignName varchar(255)
+  CampaignType varchar(255)
+  StartDate datetime
+  EndDate datetime
+}
+
+Table Certification {
+  Certification_ID bigint [pk]
+  Campaign_ID bigint
+  CertificationName varchar(255)
+}
+
+Table Cert_Role_Entitlements_Status {
+  ID bigint [pk]
+  Certification_ID bigint
+  Certification_Role_ID bigint
+  Certification_Entitlement_Value_ID bigint
+  Action varchar(255)
+}
+
+Table Certification_Account {
+  Certification_Account_ID bigint [pk]
+  Certification_ID bigint
+  AccountKey bigint
+  CertifiedAction varchar(255)
+}
+
+Table Certification_User {
+  Certification_User_ID bigint [pk]
+  Certification_ID bigint
+  UserKey bigint
+  CertifiedAction varchar(255)
+}
+
+Table Certification_Entitlement_Value {
+  Cert_Ent_Value_ID bigint [pk]
+  Certification_ID bigint
+  Entitlement_ValueKey bigint
+}
+
+// ========================================================
+// 11. RELATIONSHIPS (Foreign Keys)
+// ========================================================
+
+// Users & Orgs
+Ref: users.MANAGER - users.USERKEY
+Ref: users.SECONDARYMANAGER - users.USERKEY
+Ref: users.CUSTOMER > customer.CUSTOMERKEY
+Ref: users.UPDATEUSER > users.USERKEY
+Ref: customer.PARENTCUSTOMER - customer.CUSTOMERKEY
+Ref: customer_entitlementvalues.CUSTOMERKEY > customer.CUSTOMERKEY
+Ref: customer_entitlementvalues.ENTITLEMENT_VALUES > entitlement_values.ENTITLEMENT_VALUEKEY
+Ref: organization_owners.USERKEY > users.USERKEY
+Ref: organization_owners.CUSTOMERKEY > customer.CUSTOMERKEY
+
+// User SAV Roles
+Ref: user_savroles.USERKEY > users.USERKEY
+Ref: user_savroles.ROLEKEY > savroles.ROLEKEY
+Ref: savrole_permission.SAVROLEKEY > savroles.ROLEKEY
+
+// Accounts
+Ref: accounts.ENDPOINTKEY > endpoints.ENDPOINTKEY
+Ref: accounts.SYSTEMID > securitysystems.SYSTEMKEY
+Ref: user_accounts.USERKEY > users.USERKEY
+Ref: user_accounts.ACCOUNTKEY > accounts.ACCOUNTKEY
+
+// Entitlements
+Ref: account_entitlements1.ACCOUNTKEY > accounts.ACCOUNTKEY
+Ref: account_entitlements1.ENTITLEMENT_VALUEKEY > entitlement_values.ENTITLEMENT_VALUEKEY
+Ref: entitlement_values.ENTITLEMENTTYPEKEY > entitlement_types.ENTITLEMENTTYPEKEY
+Ref: entitlement_types.ENDPOINTKEY > endpoints.ENDPOINTKEY
+Ref: entitlement_types.SYSTEMKEY > securitysystems.SYSTEMKEY
+
+// Roles
+Ref: roles.ENDPOINTKEY > endpoints.ENDPOINTKEY
+Ref: roles.SYSTEMID > securitysystems.SYSTEMKEY
+Ref: roles.PARENTROLES - roles.ROLEKEY
+Ref: role_user_account.ROLEKEY > roles.ROLEKEY
+Ref: role_user_account.ACCOUNTKEY > accounts.ACCOUNTKEY
+Ref: role_user_account.USERKEY > users.USERKEY
+Ref: role_entitlements.ROLEKEY > roles.ROLEKEY
+Ref: role_entitlements.ENTITLEMENT_VALUEKEY > entitlement_values.ENTITLEMENT_VALUEKEY
+
+// Infrastructure
+Ref: endpoints.SECURITYSYSTEMKEY > securitysystems.SYSTEMKEY
+Ref: endpoints.PARENTENDPOINTKEY - endpoints.ENDPOINTKEY
+Ref: securitysystems.EXTERNALCONNECTION > externalconnattvalue.EXTERNALCONNECTIONKEY
+
+// User Groups
+Ref: usergroup_users.USERKEY > users.USERKEY
+Ref: usergroup_users.USER_GROUPKEY > user_groups.USERGROUPKEY
+Ref: usergroup_entitlements.USER_GROUPKEY > user_groups.USERGROUPKEY
+Ref: usergroup_entitlements.ENTITLEMENT_VALUEKEY > entitlement_values.ENTITLEMENT_VALUEKEY
+Ref: usergroup_owners.USERKEY > users.USERKEY
+Ref: usergroup_owners.USERGROUPKEY > user_groups.USERGROUPKEY
+
+// ARS (Requests)
+Ref: ars_requests.REQUESTOR > users.USERKEY
+Ref: request_access.REQUESTKEY > ars_requests.REQUESTKEY
+Ref: request_access.ACCESSKEY > entitlement_values.ENTITLEMENT_VALUEKEY
+Ref: request_access.USERKEY > users.USERKEY
+Ref: access_approvers.REQUEST_ACCESS_KEY > request_access.REQUEST_ACCESSKEY
+Ref: access_approvers.APPROVERKEY > users.USERKEY
+Ref: arstasks.ACCOUNTKEY > accounts.ACCOUNTKEY
+Ref: arstasks.REQUESTKEY > ars_requests.REQUESTKEY
+Ref: arstasks.REQUESTACCESSKEY > request_access.REQUEST_ACCESSKEY
+Ref: arstasks.USERKEY > users.USERKEY
+Ref: arstasks.ENTITLEMENT_VALUEKEY > entitlement_values.ENTITLEMENT_VALUEKEY
+
+// SOD
+Ref: sodrisks.ACCOUNTKEY > accounts.ACCOUNTKEY
+Ref: sodrisks.USERKEY > users.USERKEY
+Ref: sodrisk_entitlement.SODKEY > sodrisks.SODKEY
+Ref: sodrisk_entitlement.ACCOUNTKEY > accounts.ACCOUNTKEY
+
+// Identity Match & Mismatch
+Ref: identitymatchandmergedetails.PRIMARYUSERKEY > users.USERKEY
+Ref: identitymatchandmergedetails.DUPLICATEUSERKEY > users.USERKEY
+Ref: RoleAccessMismatches.ROLEKEY > roles.ROLEKEY
+Ref: RoleAccessMismatches.USERKEY > users.USERKEY
+Ref: RoleAccessMismatches.ACCOUNTKEY > accounts.ACCOUNTKEY
+Ref: RoleAccessMismatches.ENTITLEMENT_VALUEKEY > entitlement_values.ENTITLEMENT_VALUEKEY
+
+// Trust Analytics
+Ref: Paa_uk_evk.USERKEY > users.USERKEY
+Ref: Paa_uk_evk.ENTITLEMENT_VALUEKEY > entitlement_values.ENTITLEMENT_VALUEKEY
+Ref: Paa_uk_rk.USERKEY > users.USERKEY
+Ref: Paa_uk_rk.ROLEKEY > roles.ROLEKEY
+
+// Jobs
+Ref: importlog.JOBID > ecmimportjob.JOBID
+Ref: ecmimportjob.UPDATEUSER > users.USERNAME // Mapped by name often in logs
+
+// Campaigns (Certification)
+Ref: Certification.Campaign_ID > Campaign.Campaign_ID
+Ref: Cert_Role_Entitlements_Status.Certification_ID > Certification.Certification_ID
+Ref: Certification_Account.Certification_ID > Certification.Certification_ID
+Ref: Certification_Account.AccountKey > accounts.ACCOUNTKEY
+Ref: Certification_User.Certification_ID > Certification.Certification_ID
+Ref: Certification_User.UserKey > users.USERKEY
+Ref: Certification_Entitlement_Value.Certification_ID > Certification.Certification_ID
+Ref: Certification_Entitlement_Value.Entitlement_ValueKey > entitlement_values.ENTITLEMENT_VALUEKEY
